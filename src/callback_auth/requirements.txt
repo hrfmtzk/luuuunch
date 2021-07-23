@@ -1,0 +1,3 @@
+aws-lambda-powertools
+oauth2client
+sentry-sdk

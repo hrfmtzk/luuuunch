@@ -1,58 +1,53 @@
+# Luuuunch for Google Chat
 
-# Welcome to your CDK Python project!
+昼休憩を連絡するためのチャットボットです。
 
-This is a blank project for Python development with CDK.
+メンバーとして登録されたルームに対して平日 12:00 (JST) に連絡用のカードメッセージを投稿します。
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## 1. Deployment
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+HTTP エンドポイントタイプのチャットボットを作成します。
 
-To manually create a virtualenv on MacOS and Linux:
+### 1.1. 事前準備
 
-```
-$ python3 -m venv .venv
-```
+- API Gateway に割り当てるカスタムドメイン及び ACM 証明書
 
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
+### 1.2. GCP でのボット設定
 
-```
-$ source .venv/bin/activate
-```
+1. [サービスアカウントの使用](https://developers.google.com/chat/how-tos/service-accounts) を参考に JSON 形式のクレデンシャル情報を取得します
+   - この情報は 1.3. の手順の中で利用します
+1. [ボットの公開](https://developers.google.com/chat/how-tos/bots-publish) を参考にボットの公開設定を行います
+   - 設定は以下のように行います
+     - **Bot name** - {任意} (e.g. `Luuuunch`)
+     - **Avatar URL** - {任意} (e.g. `https://github.com/hrfmtzk/luuuunch/blob/main/assets/luuuunch.png?raw=true`)
+     - **Connection settins**
+       - **Bot URL** - `https://{カスタムドメイン}/api/callback`
 
-If you are a Windows platform, you would activate the virtualenv like this:
+### 1.3. AWS へのボットデプロイ
 
-```
-% .venv\Scripts\activate.bat
-```
+1. `.env` 等に必要な環境変数を設定した状態で CDK アプリケーションのデプロイを実施する
+1. 作成された Secrets Manager に 1.2. で作成した JSON 形式のクレデンシャルを保存する
 
-Once the virtualenv is activated, you can install the required dependencies.
+#### 環境変数
 
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+- **CERTIFICATE_ARN**
+  - カスタムドメイン用 ACM 証明書の ARN
+  - 必須 - yes
+- **DOMAIN_NAME**
+  - カスタムドメイン用 ドメイン名
+  - 必須 - yes
+- **ICON_URL**
+  - カードメッセージヘッダ用画像 URL
+  - 必須 - yes
+- **PROJECT_ID**
+  - ボットプロジェクト ID (ボットの公開にて発行されたもの)
+- **REPLY_MESSAGE**
+  - ボットにメッセージを送った際の応答文
+  - 必須 - no
+- **LOG_LEVEL**
+  - Lambda Function に設定されたロガーのログレベル
+  - 必須 - no
+  - デフォルト - `INFO`
+- **SENTRY_DSN**
+  - Lambda Function に設定された Sentry クライアント用 DSN
+  - 必須 - no

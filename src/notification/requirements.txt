@@ -1,0 +1,5 @@
+aws-lambda-powertools
+boto3
+google-api-python-client
+google-auth
+sentry-sdk
