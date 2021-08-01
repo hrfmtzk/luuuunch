@@ -12,11 +12,11 @@ app = cdk.App()
 LuuuunchStack(
     app,
     "LuuuunchStack",
-    certificate_arn=os.environ["CERTIFICATE_ARN"],
-    domain_name=os.environ["DOMAIN_NAME"],
     icon_url=os.environ["ICON_URL"],
     project_id=os.environ["PROJECT_ID"],
     reply_message=os.getenv("REPLY_MESSAGE"),
+    certificate_arn=os.getenv("CERTIFICATE_ARN"),
+    domain_name=os.getenv("DOMAIN_NAME"),
     log_level=os.getenv("LOG_LEVEL"),
     sentry_dsn=os.getenv("SENTRY_DSN"),
     env=cdk.Environment(

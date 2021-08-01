@@ -32,12 +32,12 @@ HTTP エンドポイントタイプのチャットボットを作成します。
 
 #### 環境変数
 
-- **CERTIFICATE_ARN**
-  - カスタムドメイン用 ACM 証明書の ARN
-  - 必須 - yes
 - **DOMAIN_NAME**
   - カスタムドメイン用 ドメイン名
-  - 必須 - yes
+  - 必須 - no
+- **CERTIFICATE_ARN**
+  - カスタムドメイン用 ACM 証明書の ARN
+  - 必須 - no (`DOMAIN_NAME` を指定する場合は yes)
 - **ICON_URL**
   - カードメッセージヘッダ用画像 URL
   - 必須 - yes

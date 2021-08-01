@@ -64,22 +64,29 @@ class LuuuunchCallback(cdk.Construct):
         self,
         scope: cdk.Construct,
         id: str,
-        certificate_arn: str,
-        domain_name: str,
         project_id: str,
         table: dynamodb.Table,
         log_level: str,
         reply_message: typing.Optional[str] = None,
+        certificate_arn: typing.Optional[str] = None,
+        domain_name: typing.Optional[str] = None,
         sentry_dsn: typing.Optional[str] = None,
     ) -> None:
         super().__init__(scope, id)
 
         sentry_dsn = sentry_dsn or ""
+        if domain_name and not certificate_arn:
+            raise ValueError(
+                "`CERTIFICATE_ARN` is required when using custom domain"
+            )
 
         api = apigateway.RestApi(
             self,
             "RestApi",
-            domain_name=apigateway.DomainNameOptions(
+        )
+        if domain_name and certificate_arn:
+            api.add_domain_name(
+                "DomainName",
                 certificate=acm.Certificate.from_certificate_arn(
                     self,
                     "Certificate",
@@ -88,8 +95,7 @@ class LuuuunchCallback(cdk.Construct):
                 domain_name=domain_name,
                 endpoint_type=apigateway.EndpointType.EDGE,
                 security_policy=apigateway.SecurityPolicy.TLS_1_2,
-            ),
-        )
+            )
 
         api_resource = api.root.add_resource("api")
         callback_resource = api_resource.add_resource("callback")
@@ -144,11 +150,11 @@ class LuuuunchStack(cdk.Stack):
         self,
         scope: cdk.Construct,
         construct_id: str,
-        certificate_arn: str,
-        domain_name: str,
         icon_url: str,
         project_id: str,
         reply_message: typing.Optional[str] = None,
+        certificate_arn: typing.Optional[str] = None,
+        domain_name: typing.Optional[str] = None,
         log_level: typing.Optional[str] = None,
         sentry_dsn: typing.Optional[str] = None,
         **kwargs,
@@ -190,11 +196,11 @@ class LuuuunchStack(cdk.Stack):
         LuuuunchCallback(
             self,
             "Callback",
-            certificate_arn=certificate_arn,
-            domain_name=domain_name,
             project_id=project_id,
             table=table,
             log_level=log_level,
             reply_message=reply_message,
+            certificate_arn=certificate_arn,
+            domain_name=domain_name,
             sentry_dsn=sentry_dsn,
         )
