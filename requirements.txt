@@ -3,5 +3,11 @@
 black
 flake8
 isort
+moto[all]
 pytest
 pytest-mock
+pytest-snapshot
+
+-r src/callback_auth/requirements.txt
+-r src/callback_handle/requirements.txt
+-r src/notification/requirements.txt

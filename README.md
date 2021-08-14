@@ -1,3 +1,5 @@
+![CDK application test](https://github.com/hrfmtzk/luuuunch/actions/workflows/cdk_app_test.yml/badge.svg?branch=main)
+
 # Luuuunch for Google Chat
 
 昼休憩を連絡するためのチャットボットです。
