@@ -17,6 +17,7 @@ class TestGenerateInfoText:
         os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
         os.environ["AWS_SECURITY_TOKEN"] = "testing"
         os.environ["AWS_SESSION_TOKEN"] = "testing"
+        os.environ["AWS_DEFAULT_REGION"] = "ap-northeast-1"
         os.environ["TABLE_NAME"] = "TestLuuuunch"
         os.environ["REPLY_MESSAGE"] = ""
         os.environ["POWERTOOLS_TRACE_DISABLED"] = "true"
@@ -28,9 +29,10 @@ class TestGenerateInfoText:
         original_path = sys.path
         original_modules = sys.modules
         sys.path.append(str(root_dir))
-        from src.callback_handle.index import generate_info_text
 
         with mock_cloudwatch(), mock_dynamodb2():
+            from src.callback_handle.index import generate_info_text
+
             yield generate_info_text
 
         sys.path = original_path
@@ -105,16 +107,32 @@ class LambdaContext:
 
 
 class TestHandler:
-    @pytest.fixture
-    def target(self):
-        root_dir = Path(__file__).resolve().parents[2]
-        sys.path.append(str(root_dir))
+    @pytest.fixture(scope="function")
+    def env(self) -> None:
+        os.environ["AWS_ACCESS_KEY_ID"] = "testing"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
+        os.environ["AWS_SECURITY_TOKEN"] = "testing"
+        os.environ["AWS_SESSION_TOKEN"] = "testing"
+        os.environ["AWS_DEFAULT_REGION"] = "ap-northeast-1"
         os.environ["TABLE_NAME"] = "TestLuuuunch"
         os.environ["REPLY_MESSAGE"] = ""
         os.environ["POWERTOOLS_TRACE_DISABLED"] = "true"
-        from src.callback_handle.index import lambda_handler
 
-        return lambda_handler
+    @pytest.fixture
+    def target(self, env):
+        root_dir = Path(__file__).resolve().parents[2]
+
+        original_path = sys.path
+        original_modules = sys.modules
+        sys.path.append(str(root_dir))
+
+        with mock_cloudwatch(), mock_dynamodb2():
+            from src.callback_handle.index import lambda_handler
+
+            yield lambda_handler
+
+        sys.path = original_path
+        sys.modules = original_modules
 
     @pytest.fixture
     def lambda_context(self) -> LambdaContext:
