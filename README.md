@@ -1,4 +1,4 @@
-![CDK application test](https://github.com/hrfmtzk/luuuunch/actions/workflows/cdk_app_test.yml/badge.svg?branch=main)
+![CDK application test](https://github.com/hrfmtzk/luuuunch/actions/workflows/cdk_app_test.yml/badge.svg?branch=main) [![codecov](https://codecov.io/gh/hrfmtzk/luuuunch/branch/main/graph/badge.svg?token=0P23TZMMIW)](https://codecov.io/gh/hrfmtzk/luuuunch)
 
 # Luuuunch for Google Chat
 
