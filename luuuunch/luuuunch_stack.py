@@ -34,7 +34,7 @@ class LuuuunchNotification(cdk.Construct):
             entry="src/notification",
             index="index.py",
             handler="lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_8,
+            runtime=lambda_.Runtime.PYTHON_3_9,
             environment={
                 "SECRET_ID": secret.secret_arn,
                 "TABLE_NAME": table.table_name,
@@ -106,7 +106,7 @@ class LuuuunchCallback(cdk.Construct):
             entry="src/callback_handle",
             index="index.py",
             handler="lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_8,
+            runtime=lambda_.Runtime.PYTHON_3_9,
             environment={
                 "TABLE_NAME": table.table_name,
                 "REPLY_MESSAGE": reply_message or "",
@@ -123,7 +123,7 @@ class LuuuunchCallback(cdk.Construct):
             entry="src/callback_auth",
             index="index.py",
             handler="lambda_handler",
-            runtime=lambda_.Runtime.PYTHON_3_8,
+            runtime=lambda_.Runtime.PYTHON_3_9,
             environment={
                 "AUDIENCE": project_id,
                 "LOG_LEVEL": log_level,
