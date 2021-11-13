@@ -43,6 +43,7 @@ class LuuuunchNotification(cdk.Construct):
                 "POWERTOOLS_SERVICE_NAME": "luuuunch",
                 "SENTRY_DSN": sentry_dsn,
             },
+            timeout=cdk.Duration.seconds(5),
         )
         secret.grant_read(function)
         table.grant_read_data(function)
