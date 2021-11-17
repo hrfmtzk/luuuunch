@@ -184,7 +184,8 @@
           }
         },
         "Handler": "index.lambda_handler",
-        "Runtime": "python3.9"
+        "Runtime": "python3.9",
+        "Timeout": 5
       },
       "DependsOn": [
         "NotificationFunctionServiceRoleDefaultPolicyEDEA7DA4",
