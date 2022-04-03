@@ -1,0 +1,15 @@
+-r requirements.txt
+
+black
+flake8
+isort
+moto[all]
+mypy
+pytest
+pytest-cov
+pytest-mock
+pytest-snapshot
+
+-r src/callback_auth/requirements.txt
+-r src/callback_handle/requirements.txt
+-r src/notification/requirements.txt
