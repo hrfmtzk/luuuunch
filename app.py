@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-from aws_cdk import core as cdk
+import aws_cdk as cdk
 from dotenv import find_dotenv, load_dotenv
 
 from luuuunch.luuuunch_stack import LuuuunchStack

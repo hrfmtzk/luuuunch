@@ -5,7 +5,9 @@
       "Properties": {
         "Description": "luuuunch service account credential",
         "GenerateSecretString": {}
-      }
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete"
     },
     "TableCD117FA1": {
       "Type": "AWS::DynamoDB::Table",
@@ -96,7 +98,8 @@
                 "dynamodb:Query",
                 "dynamodb:GetItem",
                 "dynamodb:Scan",
-                "dynamodb:ConditionCheckItem"
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:DescribeTable"
               ],
               "Effect": "Allow",
               "Resource": [
@@ -125,44 +128,7 @@
     "NotificationFunction17DE25F5": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53S3Bucket47739FAE"
-          },
-          "S3Key": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::Select": [
-                    0,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53S3VersionKey848F7278"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "Fn::Select": [
-                    1,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53S3VersionKey848F7278"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            ]
-          }
-        },
+        "Code": {},
         "Role": {
           "Fn::GetAtt": [
             "NotificationFunctionServiceRole1BA42045",
@@ -304,7 +270,10 @@
           "Ref": "CallbackRestApiDeploymentA3D3EA22a382665596caea8e4f5ca209684edc40"
         },
         "StageName": "prod"
-      }
+      },
+      "DependsOn": [
+        "CallbackRestApiAccountF3130567"
+      ]
     },
     "CallbackRestApiapi8EBA0FE0": {
       "Type": "AWS::ApiGateway::Resource",
@@ -546,44 +515,7 @@
     "CallbackHandleFunction7EC07BC1": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2S3Bucket82FACE51"
-          },
-          "S3Key": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::Select": [
-                    0,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2S3VersionKey299C10E6"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "Fn::Select": [
-                    1,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2S3VersionKey299C10E6"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            ]
-          }
-        },
+        "Code": {},
         "Role": {
           "Fn::GetAtt": [
             "CallbackHandleFunctionServiceRole8DA75632",
@@ -643,44 +575,7 @@
     "CallbackAuthFunction548AD8B1": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "Code": {
-          "S3Bucket": {
-            "Ref": "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46S3BucketB082FF94"
-          },
-          "S3Key": {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::Select": [
-                    0,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46S3VersionKeyBBF3DAD4"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "Fn::Select": [
-                    1,
-                    {
-                      "Fn::Split": [
-                        "||",
-                        {
-                          "Ref": "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46S3VersionKeyBBF3DAD4"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            ]
-          }
-        },
+        "Code": {},
         "Role": {
           "Fn::GetAtt": [
             "CallbackAuthFunctionServiceRole1907D96E",
@@ -745,6 +640,7 @@
     "CallbackTokenAuthorizer7C1CB357": {
       "Type": "AWS::ApiGateway::Authorizer",
       "Properties": {
+        "Name": "LuuuunchCallbackTokenAuthorizer02E07657",
         "RestApiId": {
           "Ref": "CallbackRestApiE997ABA1"
         },
@@ -755,11 +651,37 @@
             [
               "arn:",
               {
-                "Ref": "AWS::Partition"
+                "Fn::Select": [
+                  1,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Fn::GetAtt": [
+                          "CallbackAuthFunction548AD8B1",
+                          "Arn"
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               ":apigateway:",
               {
-                "Ref": "AWS::Region"
+                "Fn::Select": [
+                  3,
+                  {
+                    "Fn::Split": [
+                      ":",
+                      {
+                        "Fn::GetAtt": [
+                          "CallbackAuthFunction548AD8B1",
+                          "Arn"
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               ":lambda:path/2015-03-31/functions/",
               {
@@ -772,47 +694,8 @@
             ]
           ]
         },
-        "IdentitySource": "method.request.header.Authorization",
-        "Name": "LuuuunchCallbackTokenAuthorizer02E07657"
+        "IdentitySource": "method.request.header.Authorization"
       }
-    }
-  },
-  "Parameters": {
-    "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53S3Bucket47739FAE": {
-      "Type": "String",
-      "Description": "S3 bucket for asset \"42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53\""
-    },
-    "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53S3VersionKey848F7278": {
-      "Type": "String",
-      "Description": "S3 key for asset version \"42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53\""
-    },
-    "AssetParameters42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53ArtifactHash13BB487D": {
-      "Type": "String",
-      "Description": "Artifact hash for asset \"42fc13ec63badd31e9081c9d7d3a846c33717733511f3e07c852e98d8cae4e53\""
-    },
-    "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2S3Bucket82FACE51": {
-      "Type": "String",
-      "Description": "S3 bucket for asset \"283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2\""
-    },
-    "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2S3VersionKey299C10E6": {
-      "Type": "String",
-      "Description": "S3 key for asset version \"283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2\""
-    },
-    "AssetParameters283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2ArtifactHash38769CCF": {
-      "Type": "String",
-      "Description": "Artifact hash for asset \"283d994b22269fec22c81d707c834860826e47b9eece507e8bfb84694e8dffc2\""
-    },
-    "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46S3BucketB082FF94": {
-      "Type": "String",
-      "Description": "S3 bucket for asset \"83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46\""
-    },
-    "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46S3VersionKeyBBF3DAD4": {
-      "Type": "String",
-      "Description": "S3 key for asset version \"83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46\""
-    },
-    "AssetParameters83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46ArtifactHashDD4E7253": {
-      "Type": "String",
-      "Description": "Artifact hash for asset \"83e9789886b0587cda8cd4fce914b5316524990fd2cbb564837b941848ab7d46\""
     }
   },
   "Outputs": {
@@ -841,6 +724,40 @@
           ]
         ]
       }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
     }
   }
 }

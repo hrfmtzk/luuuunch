@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
-from moto import mock_cloudwatch, mock_dynamodb2
+from moto import mock_cloudwatch, mock_dynamodb
 from pytest_mock import MockerFixture
 
 
@@ -30,7 +30,7 @@ class TestGenerateInfoText:
         original_modules = sys.modules
         sys.path.append(str(root_dir))
 
-        with mock_cloudwatch(), mock_dynamodb2():
+        with mock_cloudwatch(), mock_dynamodb():
             from src.callback_handle.index import generate_info_text
 
             yield generate_info_text
@@ -126,7 +126,7 @@ class TestHandler:
         original_modules = sys.modules
         sys.path.append(str(root_dir))
 
-        with mock_cloudwatch(), mock_dynamodb2():
+        with mock_cloudwatch(), mock_dynamodb():
             from src.callback_handle.index import lambda_handler
 
             yield lambda_handler

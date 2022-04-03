@@ -1,10 +1,13 @@
 import json
 import os
 
+import aws_cdk as cdk
 import pytest
-from aws_cdk import assertions, core as cdk
-from luuuunch_stack import LuuuunchStack
+from aws_cdk import assertions
 from pytest_snapshot.plugin import Snapshot
+
+from luuuunch.luuuunch_stack import LuuuunchStack
+from tests.helpers import ignore_template_assets
 
 
 class TestApp:
@@ -42,10 +45,11 @@ class TestApp:
             env=env,
         )
 
+        template_json = ignore_template_assets(
+            assertions.Template.from_stack(stack).to_json()
+        )
+
         snapshot.assert_match(
-            json.dumps(
-                assertions.Template.from_stack(stack).to_json(),
-                indent=2,
-            ),
+            json.dumps(template_json, indent=2),
             "luuuunch_stack.json",
         )

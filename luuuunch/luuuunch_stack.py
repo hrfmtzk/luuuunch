@@ -1,5 +1,6 @@
 import typing
 
+import aws_cdk as cdk
 from aws_cdk import (
     aws_apigateway as apigateway,
     aws_certificatemanager as acm,
@@ -7,16 +8,16 @@ from aws_cdk import (
     aws_events as events,
     aws_events_targets as events_targets,
     aws_lambda as lambda_,
-    aws_lambda_python as lambda_python,
+    aws_lambda_python_alpha as lambda_python,
     aws_secretsmanager as secretsmanager,
-    core as cdk,
 )
+from constructs import Construct
 
 
-class LuuuunchNotification(cdk.Construct):
+class LuuuunchNotification(Construct):
     def __init__(
         self,
-        scope: cdk.Construct,
+        scope: Construct,
         id: str,
         secret: secretsmanager.Secret,
         table: dynamodb.Table,
@@ -60,10 +61,10 @@ class LuuuunchNotification(cdk.Construct):
         rule.add_target(events_targets.LambdaFunction(handler=function))
 
 
-class LuuuunchCallback(cdk.Construct):
+class LuuuunchCallback(Construct):
     def __init__(
         self,
-        scope: cdk.Construct,
+        scope: Construct,
         id: str,
         project_id: str,
         table: dynamodb.Table,
@@ -149,7 +150,7 @@ class LuuuunchCallback(cdk.Construct):
 class LuuuunchStack(cdk.Stack):
     def __init__(
         self,
-        scope: cdk.Construct,
+        scope: Construct,
         construct_id: str,
         icon_url: str,
         project_id: str,

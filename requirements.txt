@@ -1,14 +1,4 @@
--e .
-
-black
-flake8
-isort
-moto[all]
-pytest
-pytest-cov
-pytest-mock
-pytest-snapshot
-
--r src/callback_auth/requirements.txt
--r src/callback_handle/requirements.txt
--r src/notification/requirements.txt
+aws-cdk-lib==2.19.0
+aws-cdk.aws-lambda-python-alpha==2.19.0a0
+constructs>=10.0.0,<11.0.0
+python-dotenv
